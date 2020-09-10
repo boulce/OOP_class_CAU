@@ -1,11 +1,14 @@
 ## 좋은 프로그래밍이란 무엇일까?
+
 [학습 자료](https://github.com/feldblume5263/OOP_class_CAU/blob/master/class_materials/Intro_1_1.pdf)
 <br>
 
 ### 1. 정확성 (correctness)
+
 		유저의 요구 만족
 
 ### 2. 효율성 (efficiency)
+
 		HW (GPU) / SW (algorithms, data structures, ... )
 
 ### 3. 유지보수 쉬운(maintainability)
@@ -117,7 +120,7 @@ Fred Brooks라는 소프트웨어 교수는 90%이상의 전형적인 시스템�
 	함수의 부재
 ```
 
-Spaghetti code
+  Spaghetti code
 
 ```
 	복잡하고 얽힌 구조를 가진 코드
@@ -126,6 +129,8 @@ Spaghetti code
 	흐름을 따라가기 어려움
 	수정하기 어려움
 ```
+
+<br>
 
 ##### 2. 절차 프로그래밍 (C)
 
@@ -136,11 +141,41 @@ Spaghetti code
 	오류에서 더욱 자유로움
 	구조화된 프로그램
 		Top - down approach
+			- 하나의 복잡한 문제를 여러개의 간단한 문제로 쪼개서 해결.
 		Divide and conquer
+			- Top-down approach와 비슷한 개념.
 		Functional decomposition
+			- 함수를 사용
+			
+	** 시험문제를 풀 때에도 이 개념을 이해해서 활용하는 것은 중요하다.
+```
+
+<br>
+
+##### 3. 모듈 프로그래밍 (절차 프로그래밍과 비슷)
+
+```
+		소프트웨어 프로그램은 서로 다른 모듈의 집합체이다.
+		공통 기능의 절차는 별도의 모듈을 통해 함께 그룹화된다.
+		모듈의 특징
+			프로그램은 인터페이스를 통해 모듈을 사용한다.
+			인터페이스 : 가시적, 실행 : 비가시적
+			유지성을 증진시킨다.
+```
+
+<br>
+
+<b>전역변수를 사용하지 말자</b>
+
+```
+		전역변수를 사용하는 것은 매우 위험하다.
+		1. 전역변수(Can access everywhere) <-> 지역변수(Access locally)
+		2. 데이터를 공유하는 작업(전역변수 사용)은 모듈화를 방해한다.
+		3. 모든 모듈들이 제한없이 전역변수를 이용하게 된다.
+		4. 모듈이 서로에게 의존하도록 한다. (dependency)
 ```
 
 
 
-##### 3. 객체지향 프로그래밍 (JAVA, C++)
+##### 4. 객체지향 프로그래밍 (JAVA, C++)
 
