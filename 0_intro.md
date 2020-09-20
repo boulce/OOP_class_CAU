@@ -221,7 +221,11 @@ Fred Brooks라는 소프트웨어 교수는 90%이상의 전형적인 시스템�
 
 ## 객체지향언어 프로그램 concepts
 
+<br>
 
+![object_overview](https://github.com/feldblume5263/OOP_class_CAU/blob/master/other_materials/object_overview.png?raw=true)
+
+<br>
 
 ### 1. Data Abstraction (자료 추상화)
 
@@ -247,7 +251,7 @@ ADT(추상자료형)
 	C++에서 "Class"는 ADT를 정의하기 위해 사용된다.
 ```
 
-![스크린샷 2020-09-20 오후 10.09.27](/Users/feldblume/Library/Application Support/typora-user-images/스크린샷 2020-09-20 오후 10.09.27.png)<br>
+<br>
 
 ### 2. Object
 
@@ -261,9 +265,38 @@ ADT(추상자료형)
 
 ### 3. Class
 
-### 4. Inheritance
+```
+Class vs Object
 
-### 5. Polymorphism
+비유 예시.
+	int			x; 처럼 선언을 예로 들어보자 이 때, 자료형과 변수는 각각
+	(class)		(object) 로 비유될 수 있다.
+	변수 x는 4바이트 크기의 메모리를 가지고 있다. 이는 object에 비유된다.
+	하지만 자료형은 그냥 type일 뿐이다. 이는 class에 비유된다.
+	
+	하나의 클래스에 여러가지 오브젝트가 가능하다.
+```
+
+<br>
+
+### 4. Inheritance (상속)
+
+```
+목적 : 코드 재사용
+Sub class는 Super class로부터 속성과 동작을 상속받는다.
+```
+
+<br>
+
+### 5. Polymorphism (다형성)
+
+```
+하나의 이름에 여러가지 의미를 가질 수 있다.
+```
+
+<br>
 
 ### 6. Dynamic binding
+
+ 
 
