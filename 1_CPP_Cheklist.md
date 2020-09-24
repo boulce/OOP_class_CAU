@@ -83,5 +83,115 @@ The Value you entered is 77 and its double is 154
 $
 ```
 
+<br>
+
+<br>
+
+## 3. Function
+
+****
+
+문법 자체는 C와 동일하다.
+
+<br>
+
+```c++
+#include <iostream>
+using namespace std;
+
+int		addition(int a, int b)
+{
+	int		r;
+	r = a + b;
+	return (r);
+}
+
+int		main(void)
+{
+	int		z;
+	z = addition(5, 3);
+	cout << "The result is " << z << endl;
+}
+```
+
+<br>
+
+<br>
+
+## 4. Array, Pointer, Dynamic allocation
+
+****
+
+<br>
+
+<b>배열과, 포인터는 C와 거의 비슷하다.</b>
+
+<br>
+
+##### 동적할당
+
+```
+메모리할당은 run time과 compile time에 작업될 수 있다.
+우리가 malloc()을 통해 할당하는 동적할당은 run time에 할당되는 것.
+우리가 보통 배열을 int a[10]; 이렇게 할당하는 정적할당은 compile time에 sizeof(int) * 10 만큼 할당되는 것.
+```
+
+- malloc <-> new
+- Free <-> delete
+
+```c
+in C
+
+{
+	int		*x;
+	
+	x = (int *)malloc(sizeof(int) * 10);
+	...
+	free (x);
+}
+/*
+dynamic allocation
+- C 메모리할당은 런타임에 실행된다.
+*/
+```
+
+```c++
+in C++
+
+{
+	int		*x;
+	
+	x = new int[10];
+	...
+	delete[] x;
+}
+/*
+static allocation
+- C++ 메모리할당은 컴파일 타임에 실행된다.
+*/
+```
+
+<br>
+
+##### C스타일
+
+처음에 프로그램이 컴파일할 때, x라는 포인터변수만 가진다. 즉 4바이트만 가짐.<br>
+
+실행해서 한줄씩 내려가다, malloc(sizeof(int) * 10)을 만나면 40바이트가 포인터변수 x에 할당됨.
+
+<br>
+
+##### C++ 스타일
+
+컴파일 할 때, new int[10]을 만나면 그 크기(40바이트) 만큼 컴파일 한다.
+
+
+
+
+
+<br>
+
+<br>
+
 
 
