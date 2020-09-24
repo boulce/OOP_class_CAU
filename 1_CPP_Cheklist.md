@@ -183,9 +183,15 @@ static allocation
 
 ##### C++ 스타일
 
-컴파일 할 때, new int[10]을 만나면 그 크기(40바이트) 만큼 컴파일 한다.
+컴파일 할 때, new int[10]을 만나면 그 크기(40바이트) 만큼 할당한다.
 
+<br>
 
+그렇다면 이 둘의 장단점은 무엇일까?
+
+<br>
+
+![malloc vs new](https://github.com/feldblume5263/OOP_class_CAU/blob/master/other_materials/newVsMalloc.png?raw=true)
 
 
 
@@ -193,5 +199,153 @@ static allocation
 
 <br>
 
+## 5. Class
 
+****
+
+##### C++ 는 C언어 + Class라고 할 수 있을 정도로 중요하다.
+
+가장 기본적인 Class에 대해서 알아보자.
+
+<br>
+
+Class 는 member data와 member function을 탑재할 수 있는 자료구조 타입이다.
+
+<br>
+
+```c++
+#include <iostream>
+using namespace std;
+
+class		Rectangle
+{
+	int			width, height;
+	
+public:
+	void		set_values(int, int);
+	int			area() { return (width * height); }
+}
+
+void		Rectangle::set_values(int x, int y)
+{
+  width = x;
+  height = y;
+}
+
+
+
+int			main(void)
+{
+	Rectangle		rct, retb;
+	
+	rect.set_values(3, 4);
+	rectb.set_values(5, 6);
+	cout << "rect area: " << rect.area() << endl;
+	cout << "rectb area: " << rectb.area() << endl;
+	return (0);
+}
+```
+
+<br>
+
+우리는 메모리에 오브젝트를 가지고 있다. <br>
+
+rect 와 rectb <br>
+
+그리고 각각의 메모리는 width와 height를 가지고 있다. <br>
+
+<br>
+
+<br>
+
+## 6. Class constructor(생성자) / destructor(소멸자)
+
+****
+
+```c++
+#include <iostream>
+using namespace std;
+
+class		Rectangle
+{
+	int			width, height;
+	
+public:
+	Rectangle(int, int); // 이렇게 이름이 같은 부분이 생성자(constructor)이다.
+	int			area() { return (width * height); }
+}
+
+Rectangle::Rectangle(int x, int y) // 생성자 구현
+{
+  cout << "constructor start" << endl; // main에서 생성 순서를 보기 위한 장치
+  width = x;
+  height = y;
+  cout << "constructor end" << endl;
+}
+
+
+
+int			main(void)
+{	
+  cout << "0" << endl;
+	Rectangle rect(3, 4); // 오브젝트 생성
+  cout << "1" << endl;
+	Rectangle rectb(5, 6); // 오브젝트 생성
+  cout << "2" << endl;
+	cout << "rect area: " << rect.area() << endl;
+	cout << "rectb area: " << rectb.area() << endl;
+	return (0);
+}
+```
+
+<br>
+
+<br>
+
+## 7. Pointer to Class object
+
+****
+
+```c++
+#include <iostream>
+using namespace std;
+
+class		Rectangle
+{
+	int			width, height;
+	
+public:
+  Rectangle() { width = 1; height = 1; } // 아무값도 들어오지 않았을 때, 생성자.
+	Rectangle(int, int);
+	int			area() { return (width * height); }
+}
+
+Rectangle::Rectangle(int x, int y)
+{
+  width = x;
+  height = y;
+}
+
+
+
+int			main(void)
+{	
+	Rectangle		obj(3, 4);
+	Rectangle		*foo, *bar, *baz;
+  foo = &obj; // obj 주소를 가져다 씀.
+  bar = new Rectangle(5, 6); // 한개 크기만큼 생성 매개변수는 5, 6
+  baz = new Rectangle[2]; // 2개 크기만큼 생성
+	
+  
+  cout << "obj's area: " << obj.area() << endl;
+  cout << "foo's area: " << foo.area() << endl;
+  cout << "bar's area: " << bar.area() << endl;
+  cout << "baz[0]'s area: " << baz[0].area() << endl;
+  cout << "baz[1]'s area: " << baz[1].area() << endl;
+  delete bar;
+  delete[] baz;
+  
+	return (0);
+}
+```
 
