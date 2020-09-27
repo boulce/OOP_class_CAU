@@ -177,13 +177,13 @@ static allocation
 
 처음에 프로그램이 컴파일할 때, x라는 포인터변수만 가진다. 즉 4바이트만 가짐.<br>
 
-실행해서 한줄씩 내려가다, malloc(sizeof(int) * 10)을 만나면 40바이트가 포인터변수 x에 할당됨.
+실행해서 한줄씩 내려가다, malloc(sizeof(int) * 10)을 만나면 40바이트가 포인터변수 x에 할당됨. <- 동적할당
 
 <br>
 
 ##### C++ 스타일
 
-컴파일 할 때, new int[10]을 만나면 그 크기(40바이트) 만큼 할당한다.
+컴파일 할 때, new int[10]을 만나면 그 크기(40바이트) 만큼 할당한다. <- 배열처럼 쓰인다.
 
 <br>
 
@@ -193,7 +193,31 @@ static allocation
 
 ![malloc vs new](https://github.com/feldblume5263/OOP_class_CAU/blob/master/other_materials/newVsMalloc.png?raw=true)
 
+<br>
 
+**static 메모리 할당**
+
+장점
+
+- 가볍다(만들고 삭제하는 작업이 매우 빠르다)
+- 컴파일 타임에 실행된다. 그래서 실행시간이 빠르다.
+
+단점
+
+- 정확한 메모리 사이즈를 항상 미리 직접 정해야 한다.
+
+<br>
+
+**dynamic 메모리 할당**
+
+장점
+
+- 메모리 사이즈를 항상 미리 특정할 필요가 없다. (프로그램 실행 중에 cin으로 사이즈를 받아서 넣을 수 있음)
+
+단점
+
+- 무겁다 (만들고 삭제하는 시간이 느리다)
+- 런타임에 실행되기 때문에, 실행 시간이 느리다.
 
 <br>
 
@@ -315,7 +339,7 @@ class		Rectangle
 	int			width, height;
 	
 public:
-  Rectangle() { width = 1; height = 1; } // 아무값도 들어오지 않았을 때, 생성자.
+    Rectangle() { width = 1; height = 1; } // 아무값도 들어오지 않았을 때, 생성자.
 	Rectangle(int, int);
 	int			area() { return (width * height); }
 }
@@ -349,3 +373,58 @@ int			main(void)
 }
 ```
 
+<br>
+
+<br>
+
+## 8. Input/Output with Files
+
+****
+
+### file stream class
+
+- **ofstream**: 파일에 쓰기 위한 stream class
+- **ifstream**: 파일을 읽기 위한 stream class
+- **fstream**: 파일을 읽고 쓰기 위한 stream class
+
+```c++
+#include <iostream>
+#include <fstream>
+
+using namespace std;
+
+int			main(void)
+{
+    // 무언가를 쓰기 위해, 우리는 파일 스트림 오브젝트를 만들어야 한다.
+    // 1. 파일 스트림 오브젝트 변수를 만들어야 한다.
+    // 2. 파일을 열어야한다.
+    // 3. 파일을 쓴다.
+    // 4. 파일 스트림을 닫는다.
+    ofstream myfile;
+    myfile.open ("example.txt");
+    myfile << "writing this to a file.\n";
+    myfile close();
+    return (0);
+}
+```
+
+<br>
+
+**file 열기**
+
+​	모드 결정 -- 텍스트? 혹은 바이너리(그림, 음악, 실행파일 등등...)?
+
+​	쓰거나, 추가하거나 혹은 잘라내거나?
+
+​	파일 위치 (자동? 혹은 유저 지정?)
+
+<br>
+
+<참고> **text file** vs **binary file**
+
+129라는 숫자를 저장하고 싶다고 생각해보자.
+
+2가지 방법이 있다.
+
+1. text로 저장하는 방법 <- 3byte가 필요하다. '1','2','9'라는 ascii로 각각 저장한다.
+2. binary로 저장하는 방법 <- 10000001 이 저장된다.
