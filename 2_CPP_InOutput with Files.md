@@ -131,12 +131,12 @@ int			main(void)
 
 <br>
 
-- tellg() / tellp()
+- tellg() / tellp() <br>
 
-  Return current get/put position
+  Return current get/put position.
 
-- seekg() / seekp()
-  Change the location of the get / put position
+- seekg() / seekp()<br>
+  Change the location of the get / put position.
 
 <br>
 
