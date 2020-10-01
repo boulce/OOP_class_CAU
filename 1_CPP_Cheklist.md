@@ -1,4 +1,4 @@
-#  C++ 기초 체크리스트 (for C언어 숙달자)
+#  [C++] 기초 체크리스트 (for C언어 숙달자)
 
 <br>
 
@@ -377,54 +377,3 @@ int			main(void)
 
 <br>
 
-## 8. Input/Output with Files
-
-****
-
-### file stream class
-
-- **ofstream**: 파일에 쓰기 위한 stream class
-- **ifstream**: 파일을 읽기 위한 stream class
-- **fstream**: 파일을 읽고 쓰기 위한 stream class
-
-```c++
-#include <iostream>
-#include <fstream>
-
-using namespace std;
-
-int			main(void)
-{
-    // 무언가를 쓰기 위해, 우리는 파일 스트림 오브젝트를 만들어야 한다.
-    // 1. 파일 스트림 오브젝트 변수를 만들어야 한다.
-    // 2. 파일을 열어야한다.
-    // 3. 파일을 쓴다.
-    // 4. 파일 스트림을 닫는다.
-    ofstream myfile;
-    myfile.open ("example.txt");
-    myfile << "writing this to a file.\n";
-    myfile close();
-    return (0);
-}
-```
-
-<br>
-
-**file 열기**
-
-​	모드 결정 -- 텍스트? 혹은 바이너리(그림, 음악, 실행파일 등등...)?
-
-​	쓰거나, 추가하거나 혹은 잘라내거나?
-
-​	파일 위치 (자동? 혹은 유저 지정?)
-
-<br>
-
-<참고> **text file** vs **binary file**
-
-129라는 숫자를 저장하고 싶다고 생각해보자.
-
-2가지 방법이 있다.
-
-1. text로 저장하는 방법 <- 3byte가 필요하다. '1','2','9'라는 ascii로 각각 저장한다.
-2. binary로 저장하는 방법 <- 10000001 이 저장된다.
