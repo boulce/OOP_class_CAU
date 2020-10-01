@@ -35,13 +35,13 @@ int			main(void)
 
 <br>
 
-**file 열기**
+**file 열때 고려해야 할 것들**<br>
 
-​	모드 결정 -- 텍스트? 혹은 바이너리(그림, 음악, 실행파일 등등...)?
+​	모드 결정 -- 텍스트? 혹은 바이너리(그림, 음악, 실행파일 등등...)?   
 
-​	쓰거나, 추가하거나 혹은 잘라내거나?
+​	쓰거나, 추가하거나 혹은 잘라내거나?   
 
-​	파일 위치 (자동? 혹은 유저 지정?)
+​	파일 위치 (자동? 혹은 유저 지정?)   
 
 <br>
 
@@ -56,7 +56,11 @@ int			main(void)
 
 
 
-| open        | (filename, mond)                                             |
+### 파일 프로세싱 모드
+
+다음은 파일을 프로세싱 할 때 사용하는 모드이다. 아래의 코드 예시들을 보며 이해하면 쉬울 것이다.
+
+| 모드        | 설명                                                         |
 | ----------- | ------------------------------------------------------------ |
 | ios::in     | Open for Input operation                                     |
 | ios::out    | Open for output operation                                    |
@@ -123,7 +127,7 @@ int			main(void)
 
 <br>
 
-##### Get and Put Stream Positioning (file pointer 컨트롤)
+### Get and Put Stream Positioning (file pointer 컨트롤)
 
 <br>
 
@@ -175,7 +179,7 @@ size is: 40 bytes.
 
 <br>
 
-##### Binary 파일 프로세싱
+### Binary 파일 프로세싱
 
 <br>
 
