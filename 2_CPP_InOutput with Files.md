@@ -55,6 +55,7 @@ int			main(void)
 2. binary로 저장하는 방법 <- 10000001 이 저장된다.   
 <br>
 <br>
+
 ### 파일 프로세싱 모드
 
 다음은 파일을 프로세싱 할 때 사용하는 모드이다. 아래의 코드 예시들을 보며 이해하면 쉬울 것이다.
@@ -68,7 +69,7 @@ int			main(void)
 | ios::app    | All output operations are perfomed at the end of the file, appending the content to the current content of the file. |
 | ios::trunc  | If the file is opened for output operations and it already existed, its previous content is deleted and replaced by the new one. |
 
-<br/>
+<br>
 
 ##### Default mode
 
