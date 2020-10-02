@@ -102,4 +102,39 @@
 <br>
 
 - 실제로 제품을 사용하고 가정하고, 좀 더 프로그램을 세세하게 이해해야 한다.
+  ![Refine Specification](https://github.com/feldblume5263/OOP_class_CAU/blob/master/other_materials/refine%20specification.png?raw=true)
+
+- 다음 작업들을 통해 IIKH의 세세한 기능들을 파악한다.
+
+  1. 레시피 데이터베이스 탐색 (두가지 이상의 재료들로도 가능해야 함.)
+
+  2. 새로운 레시피를 데이터베이스에 추가하기
+
+  3. 기존 레시피에 주석 달기
+
+  4. 여러가지 요리로 된 식사를 계획하기
+
+  5. 일주일과 같은 더 긴 기간의 식사도 계획하기
+
+  6. 전체 기간의 메뉴에 대한 식료품 리스트 작성하기
+
+  등등...
+
+<br>
+
+<br>
+
+## 3. Identification of Componetes
+
+<br>
+
+- 구성요소에 대해 파악해야 한다.
+- CRC 카드
+  CRC카드를 통해 쉽게 구성요소를 파악할 수 있다.
   
+
+<br>
+
+<br>
+
+## 4. 
