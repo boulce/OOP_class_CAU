@@ -6,10 +6,6 @@
 
 <br>
 
-## 0. 공부하기 전에
-
-<br>
-
 디자인 방법에 대해서 공부하기 전에, <br>
 
 객체지향 프로그래밍 기술 중 하나인, **책임 주도 설계**에 대해서 알아보자.<br>
@@ -45,7 +41,7 @@
 
 <br>
 
-## 1. 디자인 방법 개요
+## 0. 디자인 방법 개요
 
 <br>
 
@@ -88,9 +84,22 @@
 
 <br>
 
-## 1-1Initial Description
+## 1. Initial Description
 
 <br>
 
 - 간단하게, IIKH는 PC기반의 프로그램이다.
+  ![Description](https://github.com/feldblume5263/OOP_class_CAU/blob/master/other_materials/iikh_description.png?raw=true)
+- 설명이 있지만, 여전히 모호하고 불분명하다.
+- 우리는 설명에서 모호한 점들을 명확히 할 필요가 있다.
+
+<br>
+
+<br>
+
+## 2. Refine Specification
+
+<br>
+
+- 실제로 제품을 사용하고 가정하고, 좀 더 프로그램을 세세하게 이해해야 한다.
   
