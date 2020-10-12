@@ -226,5 +226,15 @@
 
 <br>
 
+| Interface Veiw | Implementation View              |
+| -------------- | -------------------------------- |
+| public View    | Private View (purposeful hiding) |
 
+<br>
+
+<br>
+
+## 6. Designing the subsystem
+
+<br>
 
