@@ -9,7 +9,7 @@
 2. 컴파일 가능한 소스 코드 패키지 (inf_int.h, inf_int.cpp, main.cpp, ...)와 문제 1에 대한 readme.txt를 "prob1"및 소스 코드 패키지 (inf_int.h, inf_int.cpp, main.cpp)에 삽입합니다. , ...) 및 문제 2에 대한 readme.txt를 "prob2"에 추가합니다. readme.txt 파일에서 제출 한 소스 코드를 컴파일하고 실행하는 방법을 간략하게 설명해야합니다.
 
 3. "proj2"디렉토리를 proj2.zip에 압축하고 zip 파일을 eClass 숙제 게시판에 제출합니다.
-
+<br>
 
 ### 문제 1.
 무한 정밀도 정수와 그 연산을 나타내는 inf_int 클래스 구현을 완료합니다. <br>
@@ -17,6 +17,7 @@ inf_int의 사양은 "inf_int.h"에 제공됩니다. "inf_int.cpp"에 구현을 
 이 문제의 결과는 컴파일 가능한 소스 코드 패키지 (inf_int.h, inf_int.cpp, main.cpp, .sln 파일 (Visual Studio 2010 또는 20xx로 열기위한 파일))를 제출해야합니다.<br>
 참고로 "main.cpp"를 다양한 테스트 케이스를 포함하는 자체 main.cpp 파일로 바꾸고 코드가 내 main.cpp에 따라 올바른 결과를 생성하는지 확인하여 코드를 테스트하겠습니다.<br>
 무한 정밀도 정수의 가변 크기를 처리하기 위해 동적 메모리 할당 (new) 및 할당 해제 (delete)를 효과적으로 사용해야합니다.
+<br>
 
 ### 문제 2.
 C ++ 파일 (inf_int.h 및 inf_int.cpp)을 사용하여 계산기 프로그램을 작성하십시오.<br>
