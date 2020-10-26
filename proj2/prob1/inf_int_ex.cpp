@@ -1,26 +1,21 @@
 #include "inf_int.h"
 
-/*
-Originally written by
-컴퓨터공학부
-정진경
-*/
-
 inf_int::inf_int()
 {
-	this->digits=new char[2];	// 동적할당
+	this->digits = new char[2];	// 동적할당
 
-	this->digits[0]='0';		// default 값 0 설정
-	this->digits[1]='\0';
-	this->length=1;
-	this->thesign=true;
+	this->digits[0] = '0';		// default 값 0 설정
+	this->digits[1] = '\0';
+	this->length = 1;
+	this->thesign = true;
 }
 
 inf_int::inf_int(int n){
 	char buf[100];
 
-	if(n<0){		// 음수 처리
-		this->thesign=false;
+	if(n < 0)
+	{		// 음수 처리
+		this->thesign = false;
 		n=-n;
 	}else{
 		this->thesign=true;
@@ -47,10 +42,40 @@ inf_int::inf_int(int n){
 
 inf_int::inf_int(const char* str)
 {
-	// to be filled
-	// 부호 처리
-	// "100"이 들어왔다면 내부 표현에 맞게 "001"로 변환
-	// ex) "-1053" -> thesign=false, digits="3501", len=4
+	int				len;
+	int				start;
+	int				idx;
+	char			*buf;
+
+	start = 0;
+	if (str[0] == '-')
+	{
+		this->thesign = false;
+		start = 1;
+	}
+	else
+		this->thesign = true;
+	len = 0;
+	while (str[len])
+		len++;
+	if (!(buf = (char *)malloc(sizeof(char) * (len - start + 1))))
+	{
+		cout << "Memory allocate failed, the program will terminate." << endl;
+		exit(0);
+	}
+	idx = 0;
+	len--;
+	while (len >= start)
+	{
+		buf[idx] = str[len];
+		len--;
+		idx++;
+	}
+	buf[idx] = '\0';
+	this->length = idx;
+	this->digits = new char[idx + 1];
+	strlcpy(this->digits, buf, idx + 1);
+	idx = -1;
 }
 
 inf_int::inf_int(const inf_int& a){
@@ -82,7 +107,7 @@ inf_int& inf_int::operator=(const inf_int& a)
 bool operator==(const inf_int& a, const inf_int& b)
 {
     // we assume 0 is always positive.
-    if ( (strcmp(a.digits , b.digits)==0) && a.thesign==b.thesign )	// 부호가 같고, 절댓값이 일치해야함.
+    if ( (strcmp(a.digits, b.digits)==0) && a.thesign==b.thesign )	// 부호가 같고, 절댓값이 일치해야함.
         return true;
     return false;
 }
@@ -94,11 +119,25 @@ bool operator!=(const inf_int& a, const inf_int& b)
 
 bool operator>(const inf_int& a, const inf_int& b)
 {
-	// to be filled
-	// 절대값 비교
-	// 둘 다 양수일 경우 절댓값 비교한 것을 그대로 return
-	// 둘 다 음수일 경우 절댓값 비교의 것을 반전하여 return
-	// 부호가 다를 경우, a가 양수일 경우 b는 음수, a가 음수일 경우 b는 양수이기에 a의 부호진리값을 반환하면 됨
+	if (a.thesign == true && b.thesign == false)
+		return (true);
+	else if (a.thesign == false && b.thesign == true)
+		return (false);
+	else if (strcmp(a.digits, b.digits) > 0)
+	{
+		if (a.thesign == true && b.thesign == true)
+			return (true);
+		else if (a.thesign == false && b.thesign == false)
+			return (false);
+	}
+	else if (strcmp(a.digits, b.digits) < 0)
+	{
+		if (a.thesign == true && b.thesign == true)
+			return (false);
+		else if (a.thesign == false && b.thesign == false)
+			return (true);
+	}
+	return (false);
 }
 
 bool operator<(const inf_int& a, const inf_int& b)
@@ -124,39 +163,39 @@ inf_int operator+(const inf_int& a, const inf_int& b)
 		}
 
 		c.thesign=a.thesign;
-
+		printf("%s\n",c.digits);
 		return c;
 	}else{	// 이항의 부호가 다를 경우 - 연산자로 연산
 		c=b;
 		c.thesign=a.thesign;
 
-		return a-c;
+		return a;//a-c;
 	}
 }
 
-inf_int operator-(const inf_int& a, const inf_int& b)
-{
-	// to be filled
-}
+// inf_int operator-(const inf_int& a, const inf_int& b)
+// {
+// 	// to be filled
+// }
 
-inf_int operator*(const inf_int& a, const inf_int& b)
-{
-    // to be filled
-}
+// inf_int operator*(const inf_int& a, const inf_int& b)
+// {
+//     // to be filled
+// }
 
 
-ostream& operator<<(ostream& out, const inf_int& a)
-{
-	int i;
+// ostream& operator<<(ostream& out, const inf_int& a)
+// {
+// 	int i;
 
-	if(a.thesign==false){
-		out<<'-';
-	}
-	for(i=a.length-1; i>=0; i--){
-		out<<a.digits[i];
-	}
-	return out;
-}
+// 	if(a.thesign==false){
+// 		out<<'-';
+// 	}
+// 	for(i=a.length-1; i>=0; i--){
+// 		out<<a.digits[i];
+// 	}
+// 	return out;
+// }
 
 void inf_int::Add(const char num, const unsigned int index)	// a의 index 자리수에 n을 더한다. 0<=n<=9, ex) a가 391일때, Add(a, 2, 2)의 결과는 411
 {
@@ -184,4 +223,11 @@ void inf_int::Add(const char num, const unsigned int index)	// a의 index 자리
 		this->digits[index-1]-=10;	// 현재 자릿수에서 (아스키값) 10을 빼고
 		Add('1', index+1);			// 윗자리에 1을 더한다
 	}
+}
+
+int				main(void)
+{
+	inf_int		a("517");
+	inf_int		b("99");
+	inf_int		c = b + a;
 }
