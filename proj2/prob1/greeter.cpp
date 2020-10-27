@@ -29,12 +29,16 @@ void			Greeter::get_result(inf_int a, char opt, inf_int b)
 	else
 	{
 		cout << "wrong input..." << endl;
+		return ;
 	}
 	cout << "result : " << result << endl;
+	return ;
 }
 
 void			Greeter::showInputMenu()
 {
+	while (true)
+	{
 	while (true)
 	{
 		string		input;
@@ -51,7 +55,7 @@ void			Greeter::showInputMenu()
 		if (input == "0")
 		{
 			cout << "Exit Program ...." << endl;
-			return ;
+			exit(0) ;
 		}
 		else
 		{
@@ -67,6 +71,8 @@ void			Greeter::showInputMenu()
 			if (idx != 3)
 			{
 				cout << "wrong input..." << endl;
+				std::cin.ignore();
+				std::cin.clear();
 				break;
 			}
 			strcpy(buffer, str[0].c_str());
@@ -76,6 +82,8 @@ void			Greeter::showInputMenu()
 			if (str[1].size() != 1)
 			{
 				cout << "wrong input..." << endl;
+				std::cin.ignore();
+				std::cin.clear();
 				break;
 			}
 			strcpy(buffer, str[1].c_str());
@@ -89,6 +97,7 @@ void			Greeter::showInputMenu()
 		}
 		std::cin.ignore();
 		std::cin.clear();
+	}
 	}
 	return ;
 }
