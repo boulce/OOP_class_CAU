@@ -3,17 +3,19 @@
 
 #include "inf_int.h"
 
-class Greeter
+class			Greeter
 {
 private:
+	inf_int		a;
+	inf_int		b;
+	char		opt;
+
 
 public:
 	Greeter();
-	void	showTitle();
-	void	get_operator();
-	void	get_a();
-	void	get_b();
-	void	get_result();
+	void		showTitle();
+	void		showInputMenu();
+	void		get_result(inf_int a, char opt, inf_int b);
 };
 
 #endif

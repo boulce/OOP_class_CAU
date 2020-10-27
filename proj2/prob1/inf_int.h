@@ -39,7 +39,9 @@ public :
 
     void		Add(const char num, const unsigned int index);
     void        Minus(const char num, const unsigned int index);
-    void		Mul(const char num, const unsigned int index, unsigned int len);
+    void		Mul(const char a, const char b, const unsigned int index);
+    bool        absolute(inf_int a, inf_int b);
+
 
 };
 
