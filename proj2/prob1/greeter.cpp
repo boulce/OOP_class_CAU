@@ -1,5 +1,7 @@
 #include "greeter.h"
 
+using namespace std;
+
 Greeter::Greeter()
 {
 	this->opt = 0;
@@ -7,7 +9,11 @@ Greeter::Greeter()
 
 void			Greeter::showTitle()
 {
-
+	cout <<"                            _            _       _                             "<< endl;
+	cout <<"                   ___ __ _| | ___ _   _| | __ _| |_ ___  _ __                 "<< endl;
+	cout <<"                  / __/ _` | |/ __| | | | |/ _` | __/ _ \\| '__|                "<< endl;
+	cout <<"                 | (_| (_| | | (__| |_| | | (_| | || (_) | |                   "<< endl;
+	cout <<"                  \\___\\__,_|_|\\___|\\__,_|_|\\__,_|\\__\\___/|_|                   "<< endl;
 }
 
 void			Greeter::get_result(inf_int a, char opt, inf_int b)
@@ -81,13 +87,8 @@ void			Greeter::showInputMenu()
 
 			get_result(this->a, this->opt, this->b);
 		}
-		cin.ignore();
-		cin.clear();
+		std::cin.ignore();
+		std::cin.clear();
 	}
 	return ;
 }
-
-// bool			Greeter::get_b(string input)
-// {
-
-// }

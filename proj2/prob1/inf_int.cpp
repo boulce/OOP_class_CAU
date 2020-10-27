@@ -2,15 +2,22 @@
 
 ostream				&operator<<(ostream& out, const inf_int& a)
 {
-	int				idx;
+	int				zero;
+	int				zero_idx;
 
 	if (a.thesign == false)
 		out << '-';
-	idx = a.length - 1;
-	while (idx >= 0)
+	zero = a.length - 1;
+	zero_idx = 0;
+	if (a.length != 1)
 	{
-		out << a.digits[idx];
-		idx--;
+		while (zero >= 0 && a.digits[zero] == '0')
+			zero--;
+	}
+	while (zero >= 0)
+	{
+		out << a.digits[zero];
+		zero--;
 	}
 	return (out);
 }
@@ -151,7 +158,6 @@ inf_int				operator-(const inf_int &a, const inf_int &b)
 		idx = 0;
 		while (temp.digits[idx] == '0')
 			idx++;
-		temp.digits = temp.digits + idx;
 		return (temp);
 	}
 }
