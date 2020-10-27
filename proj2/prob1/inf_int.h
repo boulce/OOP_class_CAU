@@ -31,13 +31,16 @@ public :
 
     friend inf_int operator+(const inf_int& , const inf_int&);
     friend inf_int operator-(const inf_int& , const inf_int&);
-    // friend inf_int operator*(const inf_int& , const inf_int&);
+    friend inf_int operator*(const inf_int& , const inf_int&);
     // friend inf_int operator/(const inf_int& , const inf_int&); // not required
 
-    // friend ostream& operator<<(ostream& , const inf_int&);
+    friend ostream& operator<<(ostream& , const inf_int&);
     // friend istream& operator>>(istream& , inf_int&);    // not required
 
     void		Add(const char num, const unsigned int index);
+    void        Minus(const char num, const unsigned int index);
+    void		Mul(const char num, const unsigned int index, unsigned int len);
+
 };
 
 #endif

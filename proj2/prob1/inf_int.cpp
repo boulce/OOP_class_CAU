@@ -1,33 +1,39 @@
 #include "inf_int.h"
 
-inf_int				operator-(const inf_int &a, const inf_int &b)
+ostream				&operator<<(ostream& out, const inf_int& a)
 {
-	inf_int			temp;
-	unsigned int	idx;
+	int				idx;
 
-	if (a.thesign != b.thesign)
+	if (a.thesign == false)
+		out << '-';
+	idx = a.length - 1;
+	while (idx >= 0)
 	{
-		temp.thesign =  a > b == true ? a.thesign : b.thesign;
-		temp = b;
-		return (a + temp);
+		out << a.digits[idx];
+		idx--;
 	}
-	else
+	return (out);
+}
+
+void				inf_int::Minus(const char num, const unsigned int index)
+{
+	if (this->length < index)
 	{
-		idx = 0;
-		while (idx < a.length)
+		if (!(this->digits = (char *)realloc(this->digits, index + 1)))
 		{
-			temp.Add(a.digits[idx], idx + 1);
-			idx++;
+			cout << "Memory reallocation failed, the program will terminate." << endl;
+			exit(0);
 		}
-		cout << temp.digits << endl;
-		idx = 0;
-		while (idx < b.length)
-		{
-			temp.Add(b.digits[idx], idx + 1);
-			idx++;
-		}
-		temp.thesign = a.thesign;
-		return (temp);
+		this->length = index;
+		this->digits[this->length] = '\0';
+	}
+	if (this->digits[index - 1] < '0')
+		this->digits[index - 1] = '0';
+	this->digits[index - 1] -= (num - '0');
+	if (this->digits[index - 1] < '0')
+	{
+		this->digits[index - 1] += 10;
+		Minus('1', index + 1);
 	}
 }
 
@@ -53,6 +59,81 @@ void				inf_int::Add(const char num, const unsigned int index)
 	}
 }
 
+inf_int				operator*(const inf_int &a, const inf_int &b)
+{
+	inf_int			temp;
+	unsigned int	len;
+	unsigned int	sum_idx;
+	unsigned int	mul_idx;
+
+	if (a.thesign != b.thesign)
+		temp.thesign = false;
+	else
+		temp.thesign = true;
+	len = 0;
+	while (len < b.length)
+	{
+		mul_idx = 0;
+		while (mul_idx < (b.digits[len] - '0') * pow(10, len))
+		{
+			sum_idx = 0;
+			while (sum_idx < a.length)
+			{
+				temp.Add(a.digits[sum_idx], sum_idx + 1);
+				sum_idx++;
+			}
+			mul_idx++;
+		}
+		len++;
+	}
+	return (temp);
+}
+
+inf_int				operator-(const inf_int &a, const inf_int &b)
+{
+	inf_int			big;
+	inf_int			little;
+	inf_int			temp;
+	unsigned int	idx;
+
+	if (a.thesign != b.thesign)
+	{
+		temp = b;
+		temp.thesign =  b.thesign == true ? false : true;
+		return (a + temp);
+	}
+	else
+	{
+		if (a == b)
+			return (temp);
+		else if (a > b)
+		{
+			big = a;
+			little = b;
+			temp.thesign = a.thesign;
+		}
+		else if (a < b)
+		{
+			big = b;
+			little = a;
+			temp.thesign = b.thesign;
+		}
+		idx = 0;
+		while (idx < big.length)
+		{
+			temp.Add(big.digits[idx], idx + 1);
+			idx++;
+		}
+		idx = 0;
+		while (idx < little.length)
+		{
+			temp.Minus(little.digits[idx], idx + 1);
+			idx++;
+		}
+		return (temp);
+	}
+}
+
 inf_int				operator+(const inf_int &a, const inf_int &b)
 {
 	inf_int			temp;
@@ -66,7 +147,6 @@ inf_int				operator+(const inf_int &a, const inf_int &b)
 			temp.Add(a.digits[idx], idx + 1);
 			idx++;
 		}
-		cout << temp.digits << endl;
 		idx = 0;
 		while (idx < b.length)
 		{
@@ -80,7 +160,7 @@ inf_int				operator+(const inf_int &a, const inf_int &b)
 	{
 		temp = b;
 		temp.thesign = a.thesign;
-		return (b - temp);
+		return (a - temp);
 	}
 }
 
@@ -94,23 +174,38 @@ bool				operator<(const inf_int &a, const inf_int &b)
 
 bool				operator>(const inf_int &a, const inf_int &b)
 {
+	int				idx;
+
 	if (a.thesign == true && b.thesign == false)
 		return (true);
 	else if (a.thesign == false && b.thesign == true)
 		return (false);
-	else if (strcmp(a.digits, b.digits) > 0)
+	if (a.length > b.length)
 	{
-		if (a.thesign == true && b.thesign == true)
+		if (a.thesign == true)
 			return (true);
-		else if (a.thesign == false && b.thesign == false)
+		else if (a.thesign == false)
 			return (false);
 	}
-	else if (strcmp(a.digits, b.digits) < 0)
+	else if (a.length < b.length)
 	{
-		if (a.thesign == true && b.thesign == true)
+		if (a.thesign == true)
 			return (false);
-		else if (a.thesign == false && b.thesign == false)
+		else if (a.thesign == false)
 			return (true);
+	}
+	else if (a.length == b.length)
+	{
+		idx = a.length;
+		while (idx > 0)
+		{
+			if (a.digits[idx - 1] > b.digits[idx - 1])
+				return (true);
+			else if (a.digits[idx - 1] < b.digits[idx - 1])
+				return (false);
+			else
+				idx--;
+		}
 	}
 	return (false);
 }
@@ -228,9 +323,28 @@ inf_int::inf_int()
 	this->thesign = true;
 }
 
-int				main(void)
+#include "inf_int.h"
+#include <iostream>
+#include <string.h>
+#include <stdlib.h>
+#include <stdlib.h>
+
+using namespace std;
+
+int main()
 {
-	inf_int		a("517");
-	inf_int		b("-83");
-	inf_int		c = a - b;
+	inf_int		a;
+	inf_int		b(33);
+	inf_int		c("3211111511112345555653");
+	inf_int		d("123451987651234572749499923455022211");
+	inf_int		e;
+	inf_int		f("2014");
+	inf_int		g("5263");
+
+	e = c + d;
+	cout << e << endl;
+	e = f * g;
+	cout << e << endl;
+
+	return (0);
 }
