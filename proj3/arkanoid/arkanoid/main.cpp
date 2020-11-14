@@ -17,7 +17,7 @@
 //#include <GL/glut.h>
 
 //GLdouble rotMatrix[4][16];
-const int NO_SPHERE = 10;
+const int NO_SPHERE = 7;
 const int WALL_ID = 1000;
 
 int rotate_x = 180, rotate_y = 60;
@@ -69,7 +69,15 @@ void RunIdleFunc(void) {   glutIdleFunc(MyIdleFunc); }
 void PauseIdleFunc(void) {   glutIdleFunc(NULL); }
 void renderScene();
 
-
+float get_distance(float x1, float x2, float z1, float z2){
+    
+    float deltax = x2 - x1;
+    float deltaz = z2 - z1;
+    float ret;
+    
+    ret = sqrt(deltax * deltax + deltaz * deltaz);
+    return (ret);
+}
 class CSphere
 {
 public:
@@ -111,12 +119,14 @@ public:
         
         deltaX = this->center_x - x;
         deltaZ = this->center_z - z;
-        if (sqrt(deltaX * deltaX + deltaZ * deltaZ) < 1.1)
+        if (sqrt(deltaX * deltaX + deltaZ * deltaZ) <= 0.85)
             return (true);
         return (false);
     }
+    int currentTime, previousTime=-1;
     
-    void hitBy(CSphere hitSphere) {
+    void hitBy(CSphere hitSphere)
+    {
         float deltaX;
         float deltaZ;
         float distance;
@@ -127,12 +137,28 @@ public:
         deltaZ = this->center_z - hitSphere.center_z;
         distance = sqrt(deltaX * deltaX + deltaZ * deltaZ);
         hit_angle = acosf(deltaX / distance);
-//        if (deltaZ > 0)
-//            hit_angle = M_PI + (M_PI - hit_angle);
-        
         temp = cos(hit_angle) * dir_x - sin(hit_angle) * dir_z;
         dir_z = sin(hit_angle) * dir_x + cos(hit_angle) * dir_z;
         dir_x = temp;
+        
+        // 두 구가 서로 끼이는 것을 방지! 끼이면 살짝 먼 곳으로 움직이던 구를 옮겨준다.
+        while (get_distance(this->center_x + 0.03 * 3 * dir_x, hitSphere.center_x, this->center_z + 0.03 * 3 * dir_z, hitSphere.center_z) < 0.85) {
+            
+            temp = cos(hit_angle) * dir_x - sin(hit_angle) * dir_z;
+            dir_z = sin(hit_angle) * dir_x + cos(hit_angle) * dir_z;
+            dir_x = temp;
+            if (get_distance(this->center_x + 0.03 + 0.03 * 3 * dir_x, hitSphere.center_x, this->center_z + 0.03 + 0.03 * 3 * dir_z, hitSphere.center_z) > get_distance(this->center_x - 0.03 + 0.03 * 3 * dir_x, hitSphere.center_x, this->center_z - 0.03 + 0.03 * 3 * dir_z, hitSphere.center_z))
+            {
+                this->center_x += 0.03;
+                this->center_z += 0.03;
+            }
+            else
+            {
+                this->center_x -= 0.03;
+                this->center_z -= 0.03;
+            }
+        }
+        //std::cout << timeDelta << std::endl;
     }
     
     void draw()
@@ -142,17 +168,20 @@ public:
         glMultMatrixd(m_mRotate);
         glTranslated(center_x,center_y,center_z);
         glColor3f(color_r, color_g, color_b);
-        glutSolidSphere(0.5,20,16);
+        glutSolidSphere(0.4,20,16);
     }
 };
 
-class CWall
+class CWall : CSphere
 {
     
 public:
     float width, height, depth;
     float center_x, center_y, center_z;
     float color_r,color_g,color_b;
+    float up_wall = 8;
+    float left_wall = 8;
+    float right_wall = -8;
     
     GLfloat Verts[8][3];
     
@@ -175,11 +204,11 @@ public:
         }
     }
     
-//    bool CSphere :: hasIntersected (CSphere & ball) {} // 두 구 사이에 충돌이 있는지 확인
-//    void CSphere :: hitBy (CSphere & ball) {} // 두 구 사이에 충돌이있을 경우 수행해야하는 작업.
-//    bool CWall :: hasIntersected (CSphere & ball) {} // 구와 벽 사이에 충돌이 있는지 확인
-//    void CWall :: hitBy (CSphere & ball) {} // 구와 벽 사이에 충돌이있는 경우 수행해야하는 작업
-
+    //    bool CSphere :: hasIntersected (CSphere & ball) {} // 두 구 사이에 충돌이 있는지 확인
+    //    void CSphere :: hitBy (CSphere & ball) {} // 두 구 사이에 충돌이있을 경우 수행해야하는 작업.
+    //    bool CWall :: hasIntersected (CSphere & ball) {} // 구와 벽 사이에 충돌이 있는지 확인
+    //    void CWall :: hitBy (CSphere & ball) {} // 구와 벽 사이에 충돌이있는 경우 수행해야하는 작업
+    
     void init()
     {
         glMatrixMode(GL_MODELVIEW);
@@ -223,7 +252,7 @@ public:
             v2 = cubeIndices[i][1];
             v3 = cubeIndices[i][2];
             v4 = cubeIndices[i][3];
-
+            
             
             glBegin (GL_QUADS) ;
             glNormal3f( bNorms[i][0],bNorms[i][1],bNorms[i][2]);
@@ -237,10 +266,36 @@ public:
             glEnd () ;
         }
     }
+    
+    bool hasUpIntersected(CSphere *sphere)
+    {
+        if (sphere->center_z + 0.425 >= 8)
+            return (true);
+        return (false);
+    }
+    
+    bool hasRightLeftIntersected(CSphere *sphere)
+    {
+        if (sphere->center_x + 0.425 >= 8 || sphere->center_x - 0.425 <= -8)
+            return (true);
+        return (false);
+    }
+    
+    void hitBy(CSphere *sphere)
+    {
+        if (hasUpIntersected(sphere))
+        {
+            sphere->dir_z = -(sphere->dir_z);
+        }
+        else if (hasRightLeftIntersected(sphere))
+        {
+            sphere->dir_x = -(sphere->dir_x);
+        }
+    }
 };
 
 CSphere g_sphere[NO_SPHERE];
-CWall g_wall(13 ,0.2, 13);
+CWall g_wall(16 ,0.2, 16);
 CWall left_wall(1, 0.2, 15);
 CWall right_wall(1, 0.2, 15);
 CWall down_wall(15, 0.2, 15);
@@ -355,15 +410,15 @@ void initRotate() {
     
     i = 0;
     while (i < NO_SPHERE) {
-    g_sphere[i].init();
-    i++;
+        g_sphere[i].init();
+        i++;
     }
     g_wall.init();
 }
 
 void InitGL() {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);
-    glutInitWindowSize(1024, 768);
+    glutInitWindowSize(1920, 1080);
     glutCreateWindow("OpenGL Applications");
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
@@ -405,9 +460,9 @@ void renderScene()
     if (space_flag)
     {
         g_sphere[0].setCenter(
-                              x + timeDelta*0.004 * g_sphere[0].dir_x,
+                              x + timeDelta*0.008 * g_sphere[0].dir_x,
                               y,
-                              z + timeDelta*0.004 * g_sphere[0].dir_z);
+                              z + timeDelta*0.008 * g_sphere[0].dir_z);
     }
     
     int idx;
@@ -416,37 +471,82 @@ void renderScene()
     while (idx < NO_SPHERE) {
         if (g_sphere[0].hasIntersected(g_sphere[idx].center_x, g_sphere[idx].center_z) == true)
         {
-            if (temp_time + 1 < currentTime)
+            if (temp_time + 2 < currentTime)
             {
                 g_sphere[0].hitBy(g_sphere[idx]);
                 temp_time = currentTime;
             }
+            if (idx != 1)
+                g_sphere[idx].center_z = 100;
         }
         idx++;
     }
+    
+    // 벽에 대한 반사 실행
+    g_wall.hitBy(&g_sphere[0]);
+    
+    // 게임이 끝났을 경우
+    int finish_idx;
+    finish_idx = 3;
+    while (finish_idx < NO_SPHERE)
+    {
+        if (g_sphere[finish_idx].center_z == 100)
+            finish_idx++;
+        else
+            break;
+        if (finish_idx == NO_SPHERE)
+        {
+            space_flag = 0;
+            g_sphere[0].setCenter(0.0,0.0,-3.8);
+            g_sphere[1].setCenter(0.0,0.0,-4.75);
+            g_sphere[2].setCenter(0.0,0.0,-100.0);
+            g_sphere[15].setCenter(0.0,0.0,-1.0);
+            g_sphere[3].setCenter(-2.0,0.0,1.0);
+            g_sphere[4].setCenter(2.0,0.0,1.0);
+            g_sphere[5].setCenter(-4.0,0.0,3.0);
+            g_sphere[6].setCenter(4.0,0.0,3.0);
+//            g_sphere[7].setCenter(-6.0,0.0,4.0);
+//            g_sphere[8].setCenter(6.0,0.0,4.0);
+//            g_sphere[9].setCenter(0.0,0.0,6.0);
+//            g_sphere[10].setCenter(-2.0,0.0,4.0);
+//            g_sphere[11].setCenter(2.0,0.0,4.0);
+//            g_sphere[12].setCenter(-4.0,0.0,6.0);
+//            g_sphere[13].setCenter(4.0,0.0,6.0);
+//            g_sphere[14].setCenter(6.0,0.0,6.0);
+//            g_sphere[15].setCenter(-6.0,0.0,6.0);
+        }
+    }
+    
     glutPostRedisplay();
     previousTime=currentTime;
-
+    //std::cout << timeDelta << std::endl;
+    
+    
 }
 
 void InitObjects()
 {
     // specify initial colors and center positions of each spheres
-    g_sphere[0].setColor(0.8,0.2,0.2); g_sphere[0].setCenter(0.0,0.0,-2.5);
-    g_sphere[1].setColor(1.0,1.0,1.0); g_sphere[1].setCenter(0.0,0.0,-4.0);
-    g_sphere[2].setColor(0.2,0.2,0.8); g_sphere[2].setCenter(0.0,0.0,1.0);
-    g_sphere[3].setColor(0.2,0.2,0.8); g_sphere[3].setCenter(-2.0,0.0,3.0);
-    g_sphere[4].setColor(0.2,0.2,0.8); g_sphere[4].setCenter(2.0,0.0,3.0);
-    g_sphere[5].setColor(0.2,0.2,0.8); g_sphere[5].setCenter(-4.0,0.0,5.0);
-    g_sphere[6].setColor(0.2,0.2,0.8); g_sphere[6].setCenter(4.0,0.0,5.0);
-    g_sphere[7].setColor(0.2,0.2,0.8); g_sphere[7].setCenter(-6.0,0.0,7.0);
-    g_sphere[8].setColor(0.2,0.2,0.8); g_sphere[8].setCenter(6.0,0.0,7.0);
-    g_sphere[9].setColor(0.2,0.2,0.8); g_sphere[9].setCenter(0.0,0.0,9.0);
-
+    g_sphere[0].setColor(0.8,0.2,0.2); g_sphere[0].setCenter(0.0,0.0,-3.8);
+    g_sphere[1].setColor(1.0,1.0,1.0); g_sphere[1].setCenter(0.0,0.0,-4.75);
+    g_sphere[2].setColor(0.2,0.2,0.8); g_sphere[2].setCenter(0.0,0.0,-100.0);
+    g_sphere[16].setColor(0.2,0.2,0.8); g_sphere[15].setCenter(0.0,0.0,-1.0);
+    g_sphere[3].setColor(0.2,0.2,0.8); g_sphere[3].setCenter(-2.0,0.0,1.0);
+    g_sphere[4].setColor(0.2,0.2,0.8); g_sphere[4].setCenter(2.0,0.0,1.0);
+    g_sphere[5].setColor(0.2,0.2,0.8); g_sphere[5].setCenter(-4.0,0.0,3.0);
+    g_sphere[6].setColor(0.2,0.2,0.8); g_sphere[6].setCenter(4.0,0.0,3.0);
+//    g_sphere[7].setColor(0.2,0.2,0.8); g_sphere[7].setCenter(-6.0,0.0,4.0);
+//    g_sphere[8].setColor(0.2,0.2,0.8); g_sphere[8].setCenter(6.0,0.0,4.0);
+//    g_sphere[9].setColor(0.2,0.2,0.8); g_sphere[9].setCenter(0.0,0.0,6.0);
+//    g_sphere[10].setColor(0.2,0.2,0.8); g_sphere[10].setCenter(-2.0,0.0,4.0);
+//    g_sphere[11].setColor(0.2,0.2,0.8); g_sphere[11].setCenter(2.0,0.0,4.0);
+//    g_sphere[12].setColor(0.2,0.2,0.8); g_sphere[12].setCenter(-4.0,0.0,6.0);
+//    g_sphere[13].setColor(0.2,0.2,0.8); g_sphere[13].setCenter(4.0,0.0,6.0);
+//    g_sphere[14].setColor(0.2,0.2,0.8); g_sphere[14].setCenter(6.0,0.0,6.0);
+//    g_sphere[15].setColor(0.2,0.2,0.8); g_sphere[15].setCenter(-6.0,0.0,6.0);
     
     // specify initial colors and center positions of a wall
     g_wall.setColor(0.0,1.0,0.0); g_wall.setCenter(0.0,-0.5,0.0);
-    left_wall.setColor(0.0, 2.0, 0.0); left_wall.setCenter(-15.0, -0.6, 0.0);
 }
 
 
