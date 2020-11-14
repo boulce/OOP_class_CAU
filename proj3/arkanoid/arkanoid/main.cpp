@@ -68,6 +68,7 @@ void MyIdleFunc(void) { glutPostRedisplay();} /* things to do while idle */
 void RunIdleFunc(void) {   glutIdleFunc(MyIdleFunc); }
 void PauseIdleFunc(void) {   glutIdleFunc(NULL); }
 void renderScene();
+void InitObjects();
 
 float get_distance(float x1, float x2, float z1, float z2){
     
@@ -296,10 +297,6 @@ public:
 
 CSphere g_sphere[NO_SPHERE];
 CWall g_wall(16 ,0.2, 16);
-CWall left_wall(1, 0.2, 15);
-CWall right_wall(1, 0.2, 15);
-CWall down_wall(15, 0.2, 15);
-CWall up_wall(15, 0.2, 15);
 
 void ReshapeCallback(int width, int height)
 {
@@ -342,14 +339,14 @@ void KeyboardCallback(unsigned char ch, int x, int y)
             
         case 32 :
             if (space_flag) {
-                g_sphere[0].center_x = 0;
-                g_sphere[0].center_z = -2.5;
+                g_sphere[0].center_x = g_sphere[1].center_x;
+                g_sphere[0].center_z = -3.8;
                 space_flag=0;
             }
             else {
                 space_flag=1;
-                g_sphere[0].dir_x = 0;//g_sphere[1].center_x - g_sphere[0].center_x;
-                g_sphere[0].dir_z = -1;//g_sphere[1].center_z - g_sphere[0].center_z;
+                g_sphere[0].dir_x = 0;
+                g_sphere[0].dir_z = 1;
             }
             break; // SPACE_KEY
             
@@ -378,7 +375,7 @@ void rotate(int id)
     glRotated(((double)rotate_y), 1.0, 0.0, 0.0);
     glRotated(((double)rotate_x), 0.0, 1.0, 0.0);
     
-    if (id<NO_SPHERE) {
+    if (id < NO_SPHERE) {
         glGetDoublev(GL_MODELVIEW_MATRIX, g_sphere[id].m_mRotate);
     }
     
@@ -393,13 +390,17 @@ int k = 0;
 void MotionCallback(int x, int y) {
     int tdx=x-downX,tdy=0,tdz=y-downY,id=choice-1;
     if (leftButton && k < 1) {
-        rotate_x += 1;//x-downX;
-        rotate_y += 1;//y-downY;
+        rotate_x += 1;
+        rotate_y += 1;
         k++;
         for (i=0;i<NO_SPHERE;i++) rotate(i);
         rotate(WALL_ID);
     } else if (leftButton) {
         if (id < NO_SPHERE) g_sphere[id].setCenter(g_sphere[id].center_x - tdx/100.0,g_sphere[id].center_y,g_sphere[id].center_z);
+        if (space_flag == 0)
+        {
+            g_sphere[0].center_x = g_sphere[id].center_x;
+        }
     }
     downX = x;   downY = y;
     glutPostRedisplay();
@@ -497,23 +498,7 @@ void renderScene()
         if (finish_idx == NO_SPHERE)
         {
             space_flag = 0;
-            g_sphere[0].setCenter(0.0,0.0,-3.8);
-            g_sphere[1].setCenter(0.0,0.0,-4.75);
-            g_sphere[2].setCenter(0.0,0.0,-100.0);
-            g_sphere[15].setCenter(0.0,0.0,-1.0);
-            g_sphere[3].setCenter(-2.0,0.0,1.0);
-            g_sphere[4].setCenter(2.0,0.0,1.0);
-            g_sphere[5].setCenter(-4.0,0.0,3.0);
-            g_sphere[6].setCenter(4.0,0.0,3.0);
-//            g_sphere[7].setCenter(-6.0,0.0,4.0);
-//            g_sphere[8].setCenter(6.0,0.0,4.0);
-//            g_sphere[9].setCenter(0.0,0.0,6.0);
-//            g_sphere[10].setCenter(-2.0,0.0,4.0);
-//            g_sphere[11].setCenter(2.0,0.0,4.0);
-//            g_sphere[12].setCenter(-4.0,0.0,6.0);
-//            g_sphere[13].setCenter(4.0,0.0,6.0);
-//            g_sphere[14].setCenter(6.0,0.0,6.0);
-//            g_sphere[15].setCenter(-6.0,0.0,6.0);
+            InitObjects();
         }
     }
     
