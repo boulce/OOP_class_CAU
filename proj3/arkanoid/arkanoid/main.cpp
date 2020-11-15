@@ -17,10 +17,12 @@
 //#include <GL/glut.h>
 
 //GLdouble rotMatrix[4][16];
-const int NO_SPHERE = 7;
+const int NO_SPHERE = 17;
 const int WALL_ID = 1000;
+const int WALL_WIDTH = 16;
+const int WALL_HIGHT = 14;
 
-int rotate_x = 180, rotate_y = 60;
+int rotate_x = 180, rotate_y = 80;
 int choice = 2;
 
 GLfloat BoxVerts[][3] = {
@@ -69,6 +71,8 @@ void RunIdleFunc(void) {   glutIdleFunc(MyIdleFunc); }
 void PauseIdleFunc(void) {   glutIdleFunc(NULL); }
 void renderScene();
 void InitObjects();
+void auto_restart_game();
+void restart_game();
 
 float get_distance(float x1, float x2, float z1, float z2){
     
@@ -134,14 +138,16 @@ public:
         float hit_angle;
         float temp;
         
-        deltaX = this->center_x - hitSphere.center_x;
-        deltaZ = this->center_z - hitSphere.center_z;
+        deltaX = hitSphere.center_x - this->center_x;
+        deltaZ = hitSphere.center_z - this->center_z;
         distance = sqrt(deltaX * deltaX + deltaZ * deltaZ);
         hit_angle = acosf(deltaX / distance);
         temp = cos(hit_angle) * dir_x - sin(hit_angle) * dir_z;
         dir_z = sin(hit_angle) * dir_x + cos(hit_angle) * dir_z;
         dir_x = temp;
         
+//        if (deltaZ > 0)
+//            hit_angle = M_PI + M_PI - hit_angle;
         // 두 구가 서로 끼이는 것을 방지! 끼이면 살짝 먼 곳으로 움직이던 구를 옮겨준다.
         while (get_distance(this->center_x + 0.03 * 3 * dir_x, hitSphere.center_x, this->center_z + 0.03 * 3 * dir_z, hitSphere.center_z) < 0.85) {
             
@@ -270,14 +276,14 @@ public:
     
     bool hasUpIntersected(CSphere *sphere)
     {
-        if (sphere->center_z + 0.425 >= 8)
+        if (sphere->center_z + 0.425 >= WALL_HIGHT / 2)
             return (true);
         return (false);
     }
     
     bool hasRightLeftIntersected(CSphere *sphere)
     {
-        if (sphere->center_x + 0.425 >= 8 || sphere->center_x - 0.425 <= -8)
+        if (sphere->center_x + 0.425 >= WALL_WIDTH / 2 || sphere->center_x - 0.425 <= -1 * WALL_WIDTH / 2)
             return (true);
         return (false);
     }
@@ -296,7 +302,7 @@ public:
 };
 
 CSphere g_sphere[NO_SPHERE];
-CWall g_wall(16 ,0.2, 16);
+CWall g_wall(WALL_WIDTH ,0.2, WALL_HIGHT);
 
 void ReshapeCallback(int width, int height)
 {
@@ -389,20 +395,29 @@ int k = 0;
 
 void MotionCallback(int x, int y) {
     int tdx=x-downX,tdy=0,tdz=y-downY,id=choice-1;
-    if (leftButton && k < 1) {
+    if ((leftButton || rightButton) && k < 1) {
         rotate_x += 1;
         rotate_y += 1;
+        restart_game();
         k++;
         for (i=0;i<NO_SPHERE;i++) rotate(i);
         rotate(WALL_ID);
     } else if (leftButton) {
-        if (id < NO_SPHERE) g_sphere[id].setCenter(g_sphere[id].center_x - tdx/100.0,g_sphere[id].center_y,g_sphere[id].center_z);
+        if (id < NO_SPHERE && g_sphere[id].center_x - 0.425 > -1 * (WALL_WIDTH / 2) && g_sphere[id].center_x + 0.425 < WALL_WIDTH / 2)
+            g_sphere[id].setCenter(g_sphere[id].center_x - tdx/100.0,g_sphere[id].center_y,g_sphere[id].center_z);
+        else if (g_sphere[id].center_x - 0.425 > -1 * (WALL_WIDTH / 2))
+            g_sphere[id].setCenter(WALL_WIDTH / 2 - 1, g_sphere[id].center_y, g_sphere[id].center_z);
+        else if (g_sphere[id].center_x + 0.425 < WALL_WIDTH / 2)
+            g_sphere[id].setCenter(-1 * (WALL_WIDTH / 2) + 1, g_sphere[id].center_y, g_sphere[id].center_z);
+
+
         if (space_flag == 0)
         {
             g_sphere[0].center_x = g_sphere[id].center_x;
+            g_sphere[0].center_z = -3.8;
         }
     }
-    downX = x;   downY = y;
+        downX = x;   downY = y;
     glutPostRedisplay();
 }
 
@@ -446,6 +461,38 @@ void InitGL() {
     glutMotionFunc(MotionCallback);
 }
 
+void restart_game()
+{
+    space_flag = 0;
+    InitObjects();
+}
+
+void auto_restart_game()
+{
+    int finish_idx;
+    finish_idx = 3;
+    while (finish_idx < NO_SPHERE)
+    {
+        if (g_sphere[finish_idx].center_z == 100)
+            finish_idx++;
+        else
+            break;
+        if (finish_idx == NO_SPHERE)
+        {
+            space_flag = 0;
+            InitObjects();
+        }
+    }
+}
+
+void lose_game()
+{
+    if (g_sphere[0].center_z < -10)
+    {
+        space_flag = 0;
+    }
+}
+
 int currentTime, previousTime=-1;
 void renderScene()
 {
@@ -461,11 +508,12 @@ void renderScene()
     if (space_flag)
     {
         g_sphere[0].setCenter(
-                              x + timeDelta*0.008 * g_sphere[0].dir_x,
+                              x + timeDelta*0.012 * g_sphere[0].dir_x,
                               y,
-                              z + timeDelta*0.008 * g_sphere[0].dir_z);
+                              z + timeDelta*0.012 * g_sphere[0].dir_z);
     }
     
+    // 공이 닿는 지점을 검사하고, 닿았을 경우 반사를 실행
     int idx;
     idx = 1;
     temp_time = -1;
@@ -486,26 +534,14 @@ void renderScene()
     // 벽에 대한 반사 실행
     g_wall.hitBy(&g_sphere[0]);
     
+    // 게임에서 졌을 경우 (공이 밑으로 떨어졌을 때)
+    lose_game();
+    
     // 게임이 끝났을 경우
-    int finish_idx;
-    finish_idx = 3;
-    while (finish_idx < NO_SPHERE)
-    {
-        if (g_sphere[finish_idx].center_z == 100)
-            finish_idx++;
-        else
-            break;
-        if (finish_idx == NO_SPHERE)
-        {
-            space_flag = 0;
-            InitObjects();
-        }
-    }
+    auto_restart_game();
     
     glutPostRedisplay();
     previousTime=currentTime;
-    //std::cout << timeDelta << std::endl;
-    
     
 }
 
@@ -520,15 +556,15 @@ void InitObjects()
     g_sphere[4].setColor(0.2,0.2,0.8); g_sphere[4].setCenter(2.0,0.0,1.0);
     g_sphere[5].setColor(0.2,0.2,0.8); g_sphere[5].setCenter(-4.0,0.0,3.0);
     g_sphere[6].setColor(0.2,0.2,0.8); g_sphere[6].setCenter(4.0,0.0,3.0);
-//    g_sphere[7].setColor(0.2,0.2,0.8); g_sphere[7].setCenter(-6.0,0.0,4.0);
-//    g_sphere[8].setColor(0.2,0.2,0.8); g_sphere[8].setCenter(6.0,0.0,4.0);
-//    g_sphere[9].setColor(0.2,0.2,0.8); g_sphere[9].setCenter(0.0,0.0,6.0);
-//    g_sphere[10].setColor(0.2,0.2,0.8); g_sphere[10].setCenter(-2.0,0.0,4.0);
-//    g_sphere[11].setColor(0.2,0.2,0.8); g_sphere[11].setCenter(2.0,0.0,4.0);
-//    g_sphere[12].setColor(0.2,0.2,0.8); g_sphere[12].setCenter(-4.0,0.0,6.0);
-//    g_sphere[13].setColor(0.2,0.2,0.8); g_sphere[13].setCenter(4.0,0.0,6.0);
-//    g_sphere[14].setColor(0.2,0.2,0.8); g_sphere[14].setCenter(6.0,0.0,6.0);
-//    g_sphere[15].setColor(0.2,0.2,0.8); g_sphere[15].setCenter(-6.0,0.0,6.0);
+    g_sphere[7].setColor(0.2,0.2,0.8); g_sphere[7].setCenter(-6.0,0.0,3.5);
+    g_sphere[8].setColor(0.2,0.2,0.8); g_sphere[8].setCenter(6.0,0.0,3.5);
+    g_sphere[9].setColor(0.2,0.2,0.8); g_sphere[9].setCenter(0.0,0.0,5.5);
+    g_sphere[10].setColor(0.2,0.2,0.8); g_sphere[10].setCenter(-2.0,0.0,3.5);
+    g_sphere[11].setColor(0.2,0.2,0.8); g_sphere[11].setCenter(2.0,0.0,3.5);
+    g_sphere[12].setColor(0.2,0.2,0.8); g_sphere[12].setCenter(-4.0,0.0,5.5);
+    g_sphere[13].setColor(0.2,0.2,0.8); g_sphere[13].setCenter(4.0,0.0,5.5);
+    g_sphere[14].setColor(0.2,0.2,0.8); g_sphere[14].setCenter(6.0,0.0,5.5);
+    g_sphere[15].setColor(0.2,0.2,0.8); g_sphere[15].setCenter(-6.0,0.0,5.5);
     
     // specify initial colors and center positions of a wall
     g_wall.setColor(0.0,1.0,0.0); g_wall.setCenter(0.0,-0.5,0.0);
